@@ -7,3 +7,5 @@ config :rss_subscription_bot, RssSubscriptionBot.Repo,
   hostname: "localhost"
 
 config :rss_subscription_bot, ecto_repos: [RssSubscriptionBot.Repo]
+
+import_config("#{config_env()}.exs")
