@@ -26,5 +26,6 @@ defmodule RssSubscriptionBot.Core.Account do
     |> validate_required([:username, :pwd_string])
     |> validate_length(:username, min: @username_length_min)
     |> validate_length(:pwd_string, min: @pwd_string_length_min)
+    |> unique_constraint(:username, name: :accounts_username_unique_index)
   end
 end
