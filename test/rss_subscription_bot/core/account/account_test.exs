@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBot.Core.AccountTest do
+  alias RssSubscriptionBot.Core.AccountFixture
   use RssSubscriptionBot.SchemaCase
   alias RssSubscriptionBot.Core.Account
 
@@ -29,47 +30,38 @@ defmodule RssSubscriptionBot.Core.AccountTest do
 
   describe "registration changeset" do
     setup [:create_account]
-
-    @pass_valid "passpasspass"
-    @pass_invalid "passpass123"
-    @username_valid "username"
-    @username_invalid "12345"
-    @attrs_username_absent %{pwd_string: @pass_valid}
-    @attrs_pwd_string_absent %{username: @username_valid}
-    @attrs_pass_invalid %{username: @username_valid, pwd_string: @pass_invalid}
-    @attrs_username_invalid %{username: @username_invalid, pwd_string: @pass_valid}
-    @attrs_valid %{username: @username_valid, pwd_string: @pass_valid}
+    import AccountFixture
 
     test "should validate username presence", %{account: account} do
       %{errors: [username: {_, [validation: :required]}]} =
         account
-        |> Account.registration_changeset(@attrs_username_absent)
+        |> Account.registration_changeset(attrs_username_absent())
         |> assert_invalid()
     end
 
     test "should validate pwd_string presence", %{account: account} do
       %{errors: [pwd_string: {_, [validation: :required]}]} =
         account
-        |> Account.registration_changeset(@attrs_pwd_string_absent)
+        |> Account.registration_changeset(attrs_pwd_string_absent())
         |> assert_invalid()
     end
 
     test "should validate pwd_string length", %{account: account} do
       %{errors: [pwd_string: {_, [count: 12, validation: :length, kind: :min, type: :string]}]} =
         account
-        |> Account.registration_changeset(@attrs_pass_invalid)
+        |> Account.registration_changeset(attrs_pass_invalid())
         |> assert_invalid()
     end
 
     test "should validate username length", %{account: account} do
       %{errors: [username: {_, [count: 6, validation: :length, kind: :min, type: :string]}]} =
         account
-        |> Account.registration_changeset(@attrs_username_invalid)
+        |> Account.registration_changeset(attrs_username_invalid())
         |> assert_invalid()
     end
 
     test "should return valid changeset", %{account: account} do
-      %{valid?: true} = account |> Account.registration_changeset(@attrs_valid)
+      %{valid?: true} = account |> Account.registration_changeset(attrs_valid())
     end
   end
 end
