@@ -22,7 +22,8 @@ defmodule RssSubscriptionBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:finch, "0.16.0"}
+      {:finch, "0.16.0"},
+      {:fast_rss, "0.5.0"}
     ]
   end
 end
