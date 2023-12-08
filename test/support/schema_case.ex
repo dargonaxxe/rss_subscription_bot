@@ -4,6 +4,7 @@ defmodule RssSubscriptionBot.SchemaCase do
   using do
     quote do
       use ExUnit.Case
+      alias Ecto.Changeset
 
       defp assert_has_fields(schema, expected_fields_and_types) do
         assert schema
@@ -14,6 +15,11 @@ defmodule RssSubscriptionBot.SchemaCase do
       defp get_fields_and_types(schema) do
         for field <- schema.__schema__(:fields),
             do: {field, schema.__schema__(:type, field)}
+      end
+
+      defp assert_invalid(%Changeset{} = changeset) do
+        assert !changeset.valid?
+        changeset
       end
     end
   end
