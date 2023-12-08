@@ -23,7 +23,9 @@ defmodule RssSubscriptionBot.MixProject do
   defp deps do
     [
       {:finch, "0.16.0"},
-      {:fast_rss, "0.5.0"}
+      {:fast_rss, "0.5.0"},
+      {:ecto_sql, "3.11.1"},
+      {:postgrex, "0.17.4"}
     ]
   end
 end

@@ -2,7 +2,7 @@ defmodule RssSubscriptionBot.Application do
   use Application
 
   def start(_, _) do
-    children = [finch()]
+    children = [finch(), repo()]
 
     opts = [strategy: :one_for_one, name: RssSubscriptionBot.Supervisor]
     Supervisor.start_link(children, opts)
@@ -18,5 +18,9 @@ defmodule RssSubscriptionBot.Application do
         :default => [size: 10]
       }
     }
+  end
+
+  defp repo() do
+    RssSubscriptionBot.Repo
   end
 end
