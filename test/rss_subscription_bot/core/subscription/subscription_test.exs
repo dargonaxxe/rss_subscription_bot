@@ -29,24 +29,20 @@ defmodule RssSubscriptionBot.Core.SubscriptionTest do
   end
 
   describe "changeset" do
-    @user_id 1
-    @url "url"
-    @attrs_no_url %{user_id: @user_id}
-    @attrs_no_user_id %{url: @url}
-    @attrs_valid %{user_id: @user_id, url: @url}
+    import RssSubscriptionBot.Subscription.Fixture
 
     test "should validate url presence" do
       %{errors: [url: {_, [validation: :required]}]} =
-        Subscription.new() |> Subscription.changeset(@attrs_no_url)
+        Subscription.new() |> Subscription.changeset(attrs_no_url())
     end
 
     test "should validate user_id presence" do
       %{errors: [user_id: {_, [validation: :required]}]} =
-        Subscription.new() |> Subscription.changeset(@attrs_no_user_id)
+        Subscription.new() |> Subscription.changeset(attrs_no_user_id())
     end
 
     test "should return valid changeset" do
-      %{valid?: true} = Subscription.new() |> Subscription.changeset(@attrs_valid)
+      %{valid?: true} = Subscription.new() |> Subscription.changeset(attrs_valid())
     end
   end
 end
