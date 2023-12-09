@@ -29,17 +29,15 @@ defmodule RssSubscriptionBot.Core.UserTest do
   end
 
   describe "changeset" do
-    @account_id 1
-    @attrs_invalid %{}
-    @attrs_valid %{account_id: @account_id}
+    import User.Fixture
 
     test "should validate account_id presence" do
       %{errors: [account_id: {_, [validation: :required]}]} =
-        User.new() |> User.changeset(@attrs_invalid)
+        User.new() |> User.changeset(attrs_invalid())
     end
 
     test "should return valid changeset" do
-      %{valid?: true} = User.new() |> User.changeset(@attrs_valid)
+      %{valid?: true} = User.new() |> User.changeset(attrs_valid())
     end
   end
 end
