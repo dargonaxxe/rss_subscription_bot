@@ -1,19 +1,11 @@
 defmodule RssSubscriptionBot.Core.Session.RepoTest do
   alias RssSubscriptionBot.Core.Session
-  alias RssSubscriptionBot.Core.Accounts
-  alias RssSubscriptionBot.Core.AccountFixture
-  use RssSubscriptionBot.RepoCase
-  import AccountFixture, only: [username_valid: 0, pass_valid: 0]
+  use RssSubscriptionBot.AccountCase
   import Session.Fixture
 
-  defp setup_account(_) do
-    {:ok, account} = Accounts.create_account(username_valid(), pass_valid())
-    %{account: account}
-  end
+  setup [:setup_account]
 
   describe "happy path" do
-    setup [:setup_account]
-
     test "should insert account without a problem", %{account: %{id: account_id}} do
       attrs = %{
         account_id: account_id,
@@ -29,8 +21,6 @@ defmodule RssSubscriptionBot.Core.Session.RepoTest do
   end
 
   describe "constraints" do
-    setup [:setup_account]
-
     test "should validate account existance" do
       attrs = %{
         account_id: -1,
