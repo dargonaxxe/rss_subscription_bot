@@ -2,6 +2,7 @@ defmodule RssSubscriptionBot.Core.User do
   alias RssSubscriptionBot.Core.User
   use Ecto.Schema
 
+  # todo: add unique_index(account_id)
   schema "users" do
     belongs_to(:account, RssSubscriptionBot.Core.Account)
     timestamps()

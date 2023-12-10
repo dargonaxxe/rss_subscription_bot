@@ -12,4 +12,15 @@ defmodule RssSubscriptionBot.Core.Subscriptions do
     |> Subscription.changeset(attrs)
     |> Repo.insert()
   end
+
+  def get_subscriptions(user_id) do
+    user_id
+    |> get_subscriptions_query()
+    |> Repo.all()
+  end
+
+  import Ecto.Query 
+  defp get_subscriptions_query(user_id) do
+    from(s in Subscription, where: s.user_id == ^user_id)
+  end
 end
