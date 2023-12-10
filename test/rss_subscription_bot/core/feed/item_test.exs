@@ -9,7 +9,8 @@ defmodule RssSubscriptionBot.Core.Feed.ItemTest do
       inserted_at: :naive_datetime,
       subscription_id: :id,
       title: :string,
-      updated_at: :naive_datetime
+      updated_at: :naive_datetime,
+      guid: :string
     ]
 
     test "should have expected fields and types" do

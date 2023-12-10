@@ -6,6 +6,7 @@ defmodule RssSubscriptionBot.Core.Feed.Item do
     belongs_to(:subscription, Subscription)
     field(:title, :string)
     field(:content, :string)
+    field(:guid, :string)
     timestamps()
   end
 end
