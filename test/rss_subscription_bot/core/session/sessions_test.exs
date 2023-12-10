@@ -6,7 +6,7 @@ defmodule RssSubscriptionBot.Core.SessionsTest do
 
   describe "sign_in" do
     test "should sign in", %{account: %{username: username}} do
-      {:ok, session} = Sessions.sign_in(username, pass_valid())
+      {:ok, _} = Sessions.sign_in(username, pass_valid())
     end
 
     test "should fail with invalid username", %{account: %{username: username}} do
