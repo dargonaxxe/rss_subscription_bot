@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+  <channel>
+    <title>
+      <![CDATA[title]]>
+    </title>
+    <link>
+    <![CDATA[link]]>
+    </link>
+    <description>
+      <![CDATA[description]]>
+    </description>
+    <language>en-us</language>
+    <pubDate>Sun, 10 Dec 2023 10:32:15 +0000</pubDate>
+    <copyright>copyright</copyright>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <generator>generator</generator>
+    <managingEditor>managingEditor</managingEditor>
+    <image>
+      <url>https://www.upwork.com/images/rss_logo.png</url>
+      <title>
+        <![CDATA[All elixir jobs | upwork.com]]>
+      </title>
+      <link>
+      <![CDATA[link]]>
+      </link>
+    </image>
+    <item>
+      <title>
+        <![CDATA[title-1]]>
+      </title>
+      <link>link-1</link>
+      <description>
+        <![CDATA[description-1]]>
+      </description>
+      <content:encoded>
+        <![CDATA[description-1]]>
+      </content:encoded>
+      <pubDate>Fri, 08 Dec 2023 04:47:44 +0000</pubDate>
+      <guid>guid-1</guid>
+    </item>
+    
+    <item>
+      <title>
+        <![CDATA[title-2]]>
+      </title>
+      <link>link-2</link>
+      <description>
+        <![CDATA[description-2]]>
+      </description>
+      <content:encoded>
+        <![CDATA[description-2]]>
+      </content:encoded>
+      <pubDate>Fri, 08 Dec 2023 04:47:42 +0000</pubDate>
+      <guid>guid-2</guid>
+    </item>
+  </channel>
+</rss>
