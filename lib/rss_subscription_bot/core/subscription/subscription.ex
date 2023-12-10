@@ -5,6 +5,7 @@ defmodule RssSubscriptionBot.Core.Subscription do
 
   schema "subscriptions" do
     field(:url, :string)
+    field(:tg_handle, :string)
     belongs_to(:user, User)
     timestamps()
   end
@@ -17,8 +18,8 @@ defmodule RssSubscriptionBot.Core.Subscription do
 
   def changeset(%Subscription{} = subscription, attrs \\ %{}) do
     subscription
-    |> cast(attrs, [:url, :user_id])
-    |> validate_required([:url, :user_id])
+    |> cast(attrs, [:url, :user_id, :tg_handle])
+    |> validate_required([:url, :user_id, :tg_handle])
     |> assoc_constraint(:user)
   end
 end

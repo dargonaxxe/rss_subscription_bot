@@ -7,8 +7,9 @@ defmodule RssSubscriptionBot.Core.SubscriptionsTest do
 
   setup [:setup_user]
 
+  @tg_handle "tg_handle"
   defp create_subscription(user_id, url) do
-    {:ok, sub} = Subscriptions.create_subscription(user_id, url)
+    {:ok, sub} = Subscriptions.create_subscription(user_id, url, @tg_handle)
     sub
   end
 
@@ -16,11 +17,11 @@ defmodule RssSubscriptionBot.Core.SubscriptionsTest do
     test "should fail when user does not exist", %{user: %{id: user_id}} do
       {:error,
        %{errors: [user: {_, [constraint: :assoc, constraint_name: "subscriptions_user_id_fkey"]}]}} =
-        Subscriptions.create_subscription(user_id + 1, "url")
+        Subscriptions.create_subscription(user_id + 1, "url", @tg_handle)
     end
 
     test "should successfully create subscription when user is present", %{user: %{id: user_id}} do
-      {:ok, _} = Subscriptions.create_subscription(user_id, "url")
+      {:ok, _} = Subscriptions.create_subscription(user_id, "url", @tg_handle)
     end
   end
 
