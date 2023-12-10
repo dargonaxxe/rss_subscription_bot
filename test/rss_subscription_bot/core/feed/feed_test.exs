@@ -8,7 +8,7 @@ defmodule RssSubscriptionBot.Core.FeedTest do
 
   setup [:setup_subscription]
 
-  describe "constraints/single user" do
+  describe "add_item:constraints:single user" do
     test "should validate subscription presence", %{subscription: %{id: subscription_id}} do
       {:error,
        %{
@@ -38,7 +38,7 @@ defmodule RssSubscriptionBot.Core.FeedTest do
     end
   end
 
-  describe "constraints/multiple users" do
+  describe "add_item:constraints:multiple users" do
     setup %{} do
       {:ok, account_2} = Accounts.create_account("username_2", pass_valid())
       {:ok, user_2} = Users.create_user(account_2.id)
@@ -57,6 +57,38 @@ defmodule RssSubscriptionBot.Core.FeedTest do
     } do
       {:ok, _} = Feed.add_item(subscription_1.id, "title", "content", "guid")
       {:ok, _} = Feed.add_item(subscription_2.id, "title", "content", "guid")
+    end
+  end
+
+  describe "get_items" do
+    test "should return empty list for non-existing subscription", %{
+      subscription: %{id: subscription_id}
+    } do
+      assert Feed.get_items(subscription_id + 1) == []
+    end
+
+    test "should return empty list when there is no items", %{
+      subscription: %{id: subscription_id}
+    } do
+      assert Feed.get_items(subscription_id) == []
+    end
+
+    test "should return items ordered by creation datetime", %{
+      subscription: %{id: subscription_id}
+    } do
+      {:ok, item_1} = Feed.add_item(subscription_id, "title", "content", "guid-1")
+      {:ok, item_2} = Feed.add_item(subscription_id, "title", "content", "guid-2")
+      assert Feed.get_items(subscription_id) == [item_2, item_1]
+    end
+
+    test "should only return 20 items", %{subscription: %{id: subscription_id}} do
+      0..40
+      |> Enum.each(fn x ->
+        {:ok, _} = Feed.add_item(subscription_id, "title", "content", "guid-#{x}")
+      end)
+
+      result = Feed.get_items(subscription_id)
+      assert length(result) == 20
     end
   end
 end
