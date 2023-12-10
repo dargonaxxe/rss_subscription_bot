@@ -30,7 +30,8 @@ defmodule RssSubscriptionBot.MixProject do
       {:fast_rss, "0.5.0"},
       {:ecto_sql, "3.11.1"},
       {:postgrex, "0.17.4"},
-      {:bcrypt_elixir, "3.1.0"}
+      {:bcrypt_elixir, "3.1.0"},
+      {:mock, "0.3.8"}
     ]
   end
 end
