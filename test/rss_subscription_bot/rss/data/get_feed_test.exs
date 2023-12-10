@@ -58,8 +58,32 @@ defmodule RssSubscriptionBot.Rss.Data.GetFeedTest do
         request: fn :request, RssSubscriptionBot.Finch -> {:ok, response} end,
         build: fn :get, @url -> :request end
       ) do
-        assert RssSubscriptionBot.Rss.Data.GetFeed.get_feed(@url) == @expected_result
+        assert RssSubscriptionBot.Rss.Data.GetFeed.get_feed(@url) == {:ok, @expected_result}
       end
+    end
+  end
+
+  describe "to_domain" do
+    @subscription_id 1
+    @title "title"
+    @content "content"
+    @guid "guid"
+    @input %{
+      "title" => @title,
+      "content" => @content,
+      "guid" => %{"permalink" => true, "value" => @guid}
+    }
+    alias RssSubscriptionBot.Rss.Data.GetFeed
+    alias RssSubscriptionBot.Rss.Domain.RssItem
+
+    @expected_output %RssItem{
+      title: @title,
+      content: @content,
+      guid: @guid,
+      subscription_id: @subscription_id
+    }
+    test "should map as expected" do
+      assert GetFeed.to_domain(@subscription_id, @input) == @expected_output
     end
   end
 end
