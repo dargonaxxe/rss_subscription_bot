@@ -64,4 +64,28 @@ defmodule RssSubscriptionBot.Core.Feed.ItemTest do
       %{valid?: true} = Item.new() |> Item.changeset(@attrs_valid)
     end
   end
+
+  describe "to_domain" do
+    @subscription_id 1
+    @title "title"
+    @content "content"
+    @guid "guid"
+    @input %Item{
+      subscription_id: @subscription_id,
+      title: @title,
+      content: @content,
+      guid: @guid
+    }
+    alias RssSubscriptionBot.Rss.Domain.RssItem
+
+    @expected_output %RssItem{
+      subscription_id: @subscription_id,
+      title: @title,
+      content: @content,
+      guid: @guid
+    }
+    test "should map as expected" do
+      assert @input |> Item.to_domain() == @expected_output
+    end
+  end
 end
