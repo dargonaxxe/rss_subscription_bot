@@ -6,7 +6,11 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
   defstruct [:user_id, :subscriptions]
 
   def start_link(user_id) do
-    name = {:via, Registry, {RssSubscriptionBot.Registry, {__MODULE__, user_id}}}
+    name =
+      user_id
+      |> module_key()
+      |> via()
+
     GenServer.start_link(__MODULE__, user_id, name: name)
   end
 
@@ -28,9 +32,10 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
     state.subscriptions
     |> Enum.each(fn x ->
       {:ok, _} =
-        {:via, Registry,
-         {RssSubscriptionBot.Registry, {__MODULE__.DynamicSupervisor, state.user_id}}}
-        |> DynamicSupervisor.start_child({SubscriptionObserver, x})
+        state.user_id
+        |> supervisor_key()
+        |> via()
+        |> DynamicSupervisor.start_child(x |> child_key())
     end)
 
     {:noreply, state}
@@ -40,10 +45,28 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
   def handle_cast(:ping, state) do
     state.subscriptions
     |> Enum.each(fn x ->
-      {:via, Registry, {RssSubscriptionBot.Registry, {SubscriptionObserver, x.id}}}
+      x.id
+      |> child_key()
+      |> via()
       |> GenServer.cast(:ping)
     end)
 
     {:noreply, state}
+  end
+
+  defp module_key(id) do
+    {__MODULE__, id}
+  end
+
+  defp supervisor_key(id) do
+    {__MODULE__.DynamicSupervisor, id}
+  end
+
+  defp child_key(id) do
+    {SubscriptionObserver, id}
+  end
+
+  defp via(key) do
+    {:via, Registry, {RssSubscriptionBot.Registry, key}}
   end
 end
