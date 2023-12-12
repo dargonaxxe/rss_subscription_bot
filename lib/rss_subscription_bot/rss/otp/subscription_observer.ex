@@ -5,6 +5,10 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
 
   defstruct [:subscription, :fetched_items, :last_fetched_datetime]
 
+  def ping(id) do
+    id |> module_key() |> via |> GenServer.cast(:ping)
+  end
+
   def start_link(subscription) do
     name = {:via, Registry, {RssSubscriptionBot.Registry, {__MODULE__, subscription.id}}}
     GenServer.start_link(__MODULE__, subscription, name: name)
@@ -28,5 +32,13 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
   def handle_cast(:ping, state) do
     IO.puts("pong")
     {:noreply, state}
+  end
+
+  defp module_key(id) do
+    {__MODULE__, id}
+  end
+
+  defp via(key) do
+    {:via, Registry, {RssSubscriptionBot.Registry, key}}
   end
 end

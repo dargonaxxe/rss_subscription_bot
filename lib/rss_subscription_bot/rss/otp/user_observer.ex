@@ -5,6 +5,10 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
 
   defstruct [:user_id, :subscriptions]
 
+  def ping(id) do
+    id |> module_key() |> via() |> GenServer.cast(:ping)
+  end
+
   def start_link(user_id) do
     name =
       user_id
@@ -35,7 +39,7 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
         state.user_id
         |> supervisor_key()
         |> via()
-        |> DynamicSupervisor.start_child(x |> child_key())
+        |> DynamicSupervisor.start_child({SubscriptionObserver, x})
     end)
 
     {:noreply, state}
@@ -45,25 +49,22 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
   def handle_cast(:ping, state) do
     state.subscriptions
     |> Enum.each(fn x ->
-      x.id
-      |> child_key()
-      |> via()
-      |> GenServer.cast(:ping)
+      SubscriptionObserver.ping(x.id)
     end)
 
     {:noreply, state}
   end
 
   defp module_key(id) do
-    {__MODULE__, id}
+    id |> key(__MODULE__)
   end
 
   defp supervisor_key(id) do
-    {__MODULE__.DynamicSupervisor, id}
+    id |> key(__MODULE__.DynamicSupervisor)
   end
 
-  defp child_key(id) do
-    {SubscriptionObserver, id}
+  defp key(id, module) do
+    {module, id}
   end
 
   defp via(key) do

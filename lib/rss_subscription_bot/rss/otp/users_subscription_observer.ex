@@ -45,7 +45,7 @@ defmodule RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver do
 
     {:ok, _} =
       pid
-      |> DynamicSupervisor.start_child(id |> child_key())
+      |> DynamicSupervisor.start_child({UserObserver, id})
   end
 
   defp dynamic_supervisor_child_spec(id) do
@@ -56,7 +56,7 @@ defmodule RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver do
   def handle_info(:ping, state) do
     state
     |> Enum.each(fn %{id: id} ->
-      id |> child_key() |> via() |> GenServer.cast(:ping)
+      UserObserver.ping(id)
     end)
 
     {:noreply, state}
@@ -80,13 +80,13 @@ defmodule RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver do
     {:reply, :ok, state |> Enum.filter(fn x -> x.id != user_id end)}
   end
 
+  @impl GenServer
   def handle_call({:add, %User{} = user}, _from, state) do
     # todo: validate list state
     start_user_observer(user.id)
     {:reply, :ok, [user | state]}
   end
 
-  defp child_key(id), do: {UserObserver, id}
   defp child_supervisor_key(id), do: {UserObserver.DynamicSupervisor, id}
 
   defp via(key) do
