@@ -7,4 +7,8 @@ defmodule RssSubscriptionBot.Core.Users do
 
     User.new() |> User.changeset(attrs) |> Repo.insert()
   end
+
+  def get_users() do
+    Repo.all(User)
+  end
 end
