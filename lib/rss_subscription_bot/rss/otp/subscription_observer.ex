@@ -29,9 +29,29 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
   end
 
   @impl GenServer
-  def handle_cast(:ping, state) do
-    IO.puts("pong")
+  def handle_cast(:ping, %{last_fetched_datetime: nil} = state) do
+    {:noreply, fetch(state)}
+  end
+
+  @impl GenServer
+  def handle_cast(:ping, %{} = state) do
+    delta =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.diff(state.last_fetched_datetime)
+
+    state =
+      if delta >= 15 do
+        fetch(state)
+      else
+        state
+      end
+
     {:noreply, state}
+  end
+
+  defp fetch(state) do
+    IO.puts("fetching...")
+    put_in(state.last_fetched_datetime, NaiveDateTime.utc_now())
   end
 
   def module_key(id) do
