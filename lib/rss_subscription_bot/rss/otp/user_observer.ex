@@ -5,6 +5,10 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
 
   defstruct [:user_id, :subscriptions]
 
+  def add(subscription) do
+    subscription.user_id |> module_key() |> via() |> GenServer.call({:add, subscription})
+  end
+
   def delete(user_id, subscription_id) do
     user_id |> module_key() |> via() |> GenServer.call({:delete, subscription_id})
   end
@@ -81,6 +85,16 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
 
     updated_list = state.subscriptions |> Enum.filter(fn x -> x.id != subscription_id end)
     {:reply, :ok, put_in(state.subscriptions, updated_list)}
+  end
+
+  def handle_call({:add, subscription}, _from, state) do
+    {:ok, _} =
+      state.user_id
+      |> supervisor_key()
+      |> via()
+      |> DynamicSupervisor.start_child(SubscriptionObserver.module_key(subscription))
+
+    {:reply, :ok, put_in(state.subscriptions, [subscription | state.subscriptions])}
   end
 
   defp module_key(id) do
