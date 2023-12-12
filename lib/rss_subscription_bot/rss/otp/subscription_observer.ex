@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
+  alias RssSubscriptionBot.Rss.Data.GetFeed
   alias RssSubscriptionBot.Core.Feed.Item
   alias RssSubscriptionBot.Core.Feed
   use GenServer
@@ -50,7 +51,14 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
   end
 
   defp fetch(state) do
-    IO.puts("fetching...")
+    {:ok, feed} =
+      state.subscription.url
+      |> GetFeed.get_feed()
+
+    _new_items =
+      feed
+      |> Enum.map(fn x -> GetFeed.to_domain(state.subscription.id, x) end)
+
     put_in(state.last_fetched_datetime, NaiveDateTime.utc_now())
   end
 
