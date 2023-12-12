@@ -2,7 +2,13 @@ defmodule RssSubscriptionBot.Application do
   use Application
 
   def start(_, _) do
-    children = [finch(), repo(), registry(), users_dynamic_supervisor()]
+    children = [
+      finch(),
+      repo(),
+      registry(),
+      users_dynamic_supervisor(),
+      users_subscription_observer()
+    ]
 
     opts = [strategy: :one_for_one, name: RssSubscriptionBot.Supervisor]
     Supervisor.start_link(children, opts)
@@ -30,5 +36,9 @@ defmodule RssSubscriptionBot.Application do
 
   defp users_dynamic_supervisor do
     {DynamicSupervisor, strategy: :one_for_one, name: RssSubscriptionBot.UsersDynamicSupervisor}
+  end
+
+  defp users_subscription_observer do
+    {RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver, []}
   end
 end

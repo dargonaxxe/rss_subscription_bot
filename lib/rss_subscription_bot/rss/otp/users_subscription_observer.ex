@@ -2,7 +2,7 @@ defmodule RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver do
   alias RssSubscriptionBot.Core.Users
   use GenServer
 
-  def start_link() do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, nil)
   end
 
