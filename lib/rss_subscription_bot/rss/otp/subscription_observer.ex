@@ -62,8 +62,17 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
       |> MapSet.difference(state.fetched_items |> MapSet.new())
       |> MapSet.to_list()
 
+    store_updates(state.subscription.id, new_items)
+
     state = put_in(state.fetched_items, new_items ++ state.fetched_items)
     put_in(state.last_fetched_datetime, NaiveDateTime.utc_now())
+  end
+
+  defp store_updates(subscription_id, updates) do
+    updates
+    |> Enum.each(fn x ->
+      Feed.add_item(subscription_id, x.title, x.content, x.guid)
+    end)
   end
 
   def module_key(id) do

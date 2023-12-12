@@ -23,7 +23,7 @@ defmodule RssSubscriptionBot.Core.Feed do
   end
 
   # todo: move to config
-  @items_limit 20
+  @items_limit 200
   import Ecto.Query
 
   defp get_items_query(subscription_id) do
