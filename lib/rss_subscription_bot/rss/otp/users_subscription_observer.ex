@@ -24,7 +24,13 @@ defmodule RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver do
     |> Enum.each(fn %{id: id} ->
       {:ok, _} =
         RssSubscriptionBot.UsersDynamicSupervisor
-        |> DynamicSupervisor.start_child({UserObserver, id})
+        |> DynamicSupervisor.start_child(id |> child_key())
+
+      {:ok, _} =
+        DynamicSupervisor.start_link(
+          strategy: :one_for_one,
+          name: {:via, Registry, {RssSubscriptionBot.Registry, id |> child_supervisor_key()}}
+        )
     end)
 
     {:noreply, state}
@@ -34,9 +40,12 @@ defmodule RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver do
   def handle_info(:ping, state) do
     state
     |> Enum.each(fn %{id: id} ->
-      {:via, Registry, {RssSubscriptionBot.Registry, {UserObserver, id}}} |> GenServer.cast(:ping)
+      {:via, Registry, {RssSubscriptionBot.Registry, id |> child_key()}} |> GenServer.cast(:ping)
     end)
 
     {:noreply, state}
   end
+
+  defp child_key(id), do: {UserObserver, id}
+  defp child_supervisor_key(id), do: {UserObserver.DynamicSupervisor, id}
 end
