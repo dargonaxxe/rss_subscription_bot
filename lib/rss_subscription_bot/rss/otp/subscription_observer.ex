@@ -55,10 +55,14 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
       state.subscription.url
       |> GetFeed.get_feed()
 
-    _new_items =
+    new_items =
       feed
       |> Enum.map(fn x -> GetFeed.to_domain(state.subscription.id, x) end)
+      |> MapSet.new()
+      |> MapSet.difference(state.fetched_items |> MapSet.new())
+      |> MapSet.to_list()
 
+    state = put_in(state.fetched_items, new_items ++ state.fetched_items)
     put_in(state.last_fetched_datetime, NaiveDateTime.utc_now())
   end
 
