@@ -34,7 +34,7 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
     {:noreply, state}
   end
 
-  defp module_key(id) do
+  def module_key(id) do
     {__MODULE__, id}
   end
 

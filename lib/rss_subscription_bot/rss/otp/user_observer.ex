@@ -5,6 +5,10 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
 
   defstruct [:user_id, :subscriptions]
 
+  def delete(user_id, subscription_id) do
+    user_id |> module_key() |> via() |> GenServer.call({:delete, subscription_id})
+  end
+
   def ping(id) do
     id |> module_key() |> via() |> GenServer.cast(:ping)
   end
@@ -53,6 +57,30 @@ defmodule RssSubscriptionBot.Rss.Otp.UserObserver do
     end)
 
     {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_call({:delete, subscription_id}, _from, state) do
+    :ok =
+      state.subscriptions
+      |> Enum.find(fn x -> x.id == subscription_id end)
+      |> case do
+        nil ->
+          :ok
+
+        %{} ->
+          [{pid, _}] =
+            RssSubscriptionBot.Registry
+            |> Registry.lookup(subscription_id |> SubscriptionObserver.module_key())
+
+          state.user_id
+          |> supervisor_key()
+          |> via()
+          |> DynamicSupervisor.terminate_child(pid)
+      end
+
+    updated_list = state.subscriptions |> Enum.filter(fn x -> x.id != subscription_id end)
+    {:reply, :ok, put_in(state.subscriptions, updated_list)}
   end
 
   defp module_key(id) do
