@@ -7,7 +7,8 @@ defmodule RssSubscriptionBot.Application do
       repo(),
       registry(),
       users_dynamic_supervisor(),
-      users_subscription_observer()
+      users_subscription_observer(),
+      telegram_api()
     ]
 
     opts = [strategy: :one_for_one, name: RssSubscriptionBot.Supervisor]
@@ -40,5 +41,9 @@ defmodule RssSubscriptionBot.Application do
 
   defp users_subscription_observer do
     {RssSubscriptionBot.Rss.Otp.UsersSubscriptionObserver, []}
+  end
+
+  defp telegram_api do
+    {RssSubscriptionBot.Telegram.Domain.TelegramApi, []}
   end
 end
