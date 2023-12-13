@@ -25,6 +25,7 @@ defmodule RssSubscriptionBot.Telegram.Domain.TelegramApi do
     {:ok, %__MODULE__{}}
   end
 
+  @impl GenServer
   def handle_call({:send_message, message}, _from, state) do
     state = state |> add_to_queue(message)
     ping()

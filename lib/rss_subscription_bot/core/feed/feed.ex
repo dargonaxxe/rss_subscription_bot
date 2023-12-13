@@ -1,5 +1,4 @@
 defmodule RssSubscriptionBot.Core.Feed do
-  alias RssSubscriptionBot.Core.Subscription
   alias RssSubscriptionBot.Repo
   alias RssSubscriptionBot.Core.Feed.Item
 
