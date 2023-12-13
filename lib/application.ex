@@ -2,15 +2,17 @@ defmodule RssSubscriptionBot.Application do
   use Application
 
   def start(_, _) do
-    children = [
-      finch(),
-      repo(),
-      registry(),
-      users_dynamic_supervisor(),
-      users_subscription_observer(),
-      telegram_api(),
-      polling_handler()
-    ]
+    children =
+      [
+        finch(),
+        repo(),
+        registry(),
+        users_dynamic_supervisor(),
+        users_subscription_observer(),
+        telegram_api(),
+        polling_handler()
+      ]
+      |> Enum.filter(fn x -> x != nil end)
 
     opts = [strategy: :one_for_one, name: RssSubscriptionBot.Supervisor]
     Supervisor.start_link(children, opts)
@@ -49,6 +51,12 @@ defmodule RssSubscriptionBot.Application do
   end
 
   defp polling_handler do
-    {RssSubscriptionBot.Telegram.PollingHandler, []}
+    case Mix.env() do
+      :test ->
+        nil
+
+      _ ->
+        {RssSubscriptionBot.Telegram.PollingHandler, []}
+    end
   end
 end
