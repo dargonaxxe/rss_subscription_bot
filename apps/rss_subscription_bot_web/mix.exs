@@ -23,7 +23,7 @@ defmodule RssSubscriptionBotWeb.MixProject do
   def application do
     [
       mod: {RssSubscriptionBotWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :rss_subscription_bot]
     ]
   end
 
