@@ -9,4 +9,8 @@ defmodule RssSubscriptionBot.Core.TgUsers do
     |> TgUser.changeset(attrs)
     |> Repo.insert(on_conflict: :replace_all, conflict_target: :tg_id)
   end
+
+  def find_by_handle(handle) do
+    Repo.get_by(TgUser, handle: handle)
+  end
 end

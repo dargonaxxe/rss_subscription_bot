@@ -15,4 +15,10 @@ defmodule RssSubscriptionBot.Core.TgUser.TgUsersTest do
     {:ok, _} = TgUsers.new_user(@tg_id, @handle)
     {:ok, %{handle: @handle_2}} = TgUsers.new_user(@tg_id, @handle_2)
   end
+
+  test "should find user by handle" do
+    {:ok, user_1} = TgUsers.new_user(@tg_id, @handle)
+    user_2 = TgUsers.find_by_handle(@handle)
+    assert(user_2 == user_1)
+  end
 end
