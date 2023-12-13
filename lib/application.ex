@@ -8,7 +8,8 @@ defmodule RssSubscriptionBot.Application do
       registry(),
       users_dynamic_supervisor(),
       users_subscription_observer(),
-      telegram_api()
+      telegram_api(),
+      polling_handler()
     ]
 
     opts = [strategy: :one_for_one, name: RssSubscriptionBot.Supervisor]
@@ -45,5 +46,9 @@ defmodule RssSubscriptionBot.Application do
 
   defp telegram_api do
     {RssSubscriptionBot.Telegram.Domain.TelegramApi, []}
+  end
+
+  defp polling_handler do
+    {RssSubscriptionBot.Telegram.PollingHandler, []}
   end
 end
