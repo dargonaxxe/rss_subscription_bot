@@ -31,7 +31,8 @@ defmodule RssSubscriptionBot.MixProject do
       {:ecto_sql, "3.11.1"},
       {:postgrex, "0.17.4"},
       {:bcrypt_elixir, "3.1.0"},
-      {:mock, "0.3.8"}
+      {:mock, "0.3.8"},
+      {:telegex, "1.3.2"}
     ]
   end
 end
