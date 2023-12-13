@@ -81,7 +81,7 @@ defmodule RssSubscriptionBot.Telegram.Domain.TelegramApi do
   end
 
   defp process_queue_item(%SendMessage{} = item) do
-    Telegex.send_message(item.chat_id, item.text)
+    Telegex.send_message(item.chat_id, item.text, parse_mode: item.parse_mode)
     |> case do
       {:ok, _} ->
         :ok

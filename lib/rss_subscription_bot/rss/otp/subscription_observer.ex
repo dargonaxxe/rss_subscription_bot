@@ -1,4 +1,9 @@
 defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
+  alias RssSubscriptionBot.Rss.Domain.RssItem
+  alias RssSubscriptionBot.Telegram.Domain.TelegramApi
+  alias RssSubscriptionBot.Core.TgUser
+  alias RssSubscriptionBot.Core.TgUsers
+  alias RssSubscriptionBot.Core.Subscription
   alias RssSubscriptionBot.Rss.Data.GetFeed
   alias RssSubscriptionBot.Core.Feed.Item
   alias RssSubscriptionBot.Core.Feed
@@ -62,16 +67,29 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
       |> MapSet.difference(state.fetched_items |> MapSet.new())
       |> MapSet.to_list()
 
-    store_updates(state.subscription.id, new_items)
+    store_updates(state.subscription, new_items)
 
     state = put_in(state.fetched_items, new_items ++ state.fetched_items)
     put_in(state.last_fetched_datetime, NaiveDateTime.utc_now())
   end
 
-  defp store_updates(subscription_id, updates) do
+  defp store_updates(%Subscription{} = subscription, updates) do
     updates
     |> Enum.each(fn x ->
-      Feed.add_item(subscription_id, x.title, x.content, x.guid)
+      {:ok, _} = Feed.add_item(subscription.id, x.title, x.content, x.guid)
+
+      :ok =
+        subscription.tg_handle
+        |> TgUsers.find_by_handle()
+        |> case do
+          nil ->
+            :ok
+
+          %TgUser{tg_id: tg_id} ->
+            x
+            |> RssItem.to_send_message(tg_id)
+            |> TelegramApi.send_message()
+        end
     end)
   end
 
