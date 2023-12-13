@@ -1,38 +1,21 @@
-defmodule RssSubscriptionBot.MixProject do
+defmodule Umbrella.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :rss_subscription_bot,
+      apps_path: "apps",
       version: "0.1.0",
-      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      deps: deps()
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
-
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger],
-      mod: {RssSubscriptionBot.Application, []}
-    ]
-  end
-
-  # Run "mix help deps" to learn about dependencies.
+  # Dependencies listed here are available only for this
+  # project and cannot be accessed from applications inside
+  # the apps folder.
+  #
+  # Run "mix help deps" for examples and options.
   defp deps do
-    [
-      {:finch, "0.16.0"},
-      {:fast_rss, "0.5.0"},
-      {:ecto_sql, "3.11.1"},
-      {:postgrex, "0.17.4"},
-      {:bcrypt_elixir, "3.1.0"},
-      {:mock, "0.3.8"},
-      {:telegex, "1.3.2"}
-    ]
+    []
   end
 end
