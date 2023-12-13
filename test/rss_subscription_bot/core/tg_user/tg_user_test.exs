@@ -6,7 +6,6 @@ defmodule RssSubscriptionBot.Core.TgUserTest do
   describe "fields & types" do
     @expected_fields_and_types [
       handle: :string,
-      id: :id,
       inserted_at: :naive_datetime,
       tg_id: :id,
       updated_at: :naive_datetime

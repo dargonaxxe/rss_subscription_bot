@@ -1,8 +1,8 @@
 defmodule RssSubscriptionBot.Core.TgUser do
   use Ecto.Schema
 
+  @primary_key {:tg_id, :id, []}
   schema "tg_users" do
-    field(:tg_id, :id, primary_key: true)
     field(:handle, :string)
     timestamps()
   end
