@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBot.Telegram.Domain.TelegramApi do
+  alias RssSubscriptionBot.Telegram.Domain.Model.SendMessage
   use GenServer
 
   defstruct queue: [], send_timestamps: []
@@ -7,12 +8,32 @@ defmodule RssSubscriptionBot.Telegram.Domain.TelegramApi do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
+  def send_message(%SendMessage{} = message) do
+    GenServer.call(__MODULE__, {:send_message, message})
+  end
+
+  def ping() do
+    GenServer.whereis(__MODULE__)
+    |> send(:ping)
+  end
+
   @throughput 20
   @interval 1000 / @throughput
   @impl GenServer
   def init(_) do
     :timer.send_interval(@interval, self(), :ping)
     {:ok, %__MODULE__{}}
+  end
+
+  def handle_call({:send_message, message}, _from, state) do
+    state = state |> add_to_queue(message)
+    ping()
+    {:reply, :ok, state}
+  end
+
+  defp add_to_queue(state, event) do
+    queue = state.queue ++ [event]
+    put_in(state.queue, queue)
   end
 
   @impl GenServer
@@ -58,8 +79,20 @@ defmodule RssSubscriptionBot.Telegram.Domain.TelegramApi do
     end
   end
 
-  defp process_queue_item(_item) do
-    IO.puts("ping")
+  defp process_queue_item(%SendMessage{} = item) do
+    Telegex.send_message(item.chat_id, item.text)
+    |> case do
+      {:ok, _} ->
+        :ok
+
+      error ->
+        error |> inspect() |> IO.puts()
+        error
+    end
+  end
+
+  defp process_queue_item(item) do
+    IO.puts("unknown type: #{inspect(item)}")
   end
 
   defp update_state(%{send_timestamps: timestamps} = state) do
