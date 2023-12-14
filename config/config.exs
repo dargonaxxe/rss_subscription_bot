@@ -1,8 +1,7 @@
 import Config
 
 config :rss_subscription_bot_web,
-  ecto_repos: [RssSubscriptionBotWeb.Repo],
-  generators: [context_app: false]
+  ecto_repos: [RssSubscriptionBot.Repo]
 
 # Configures the endpoint
 config :rss_subscription_bot_web, RssSubscriptionBotWeb.Endpoint,
