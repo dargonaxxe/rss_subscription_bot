@@ -21,9 +21,21 @@ defmodule RssSubscriptionBotWeb.RegistrationLive do
     socket |> assign(form: changeset |> to_form())
   end
 
+  def handle_event("validate", _unsigned_params, socket) do
+    # todo
+    {:noreply, socket}
+  end
+
   def render(assigns) do
     ~H"""
     <h1>Hello there!</h1>
+    <.simple_form for={@form} phx-change="validate" phx-submit="save">
+      <.input field={@form[:username]} label="Username"/>
+      <.input field={@form[:pwd_string]} label="Password" type="password"/>
+      <:actions> 
+        <.button>Save</.button>
+      </:actions>
+    </.simple_form>
     """
   end
 end
