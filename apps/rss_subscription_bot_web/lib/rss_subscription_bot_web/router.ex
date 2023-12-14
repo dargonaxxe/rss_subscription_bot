@@ -18,7 +18,8 @@ defmodule RssSubscriptionBotWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :home)
-    live("/registration", RegistrationLive)
+    live("/user/registration", RegistrationLive)
+    live("/user/login", UserLoginLive)
   end
 
   # Other scopes may use custom stacks.
