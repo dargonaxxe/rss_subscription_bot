@@ -1,4 +1,6 @@
 defmodule RssSubscriptionBotWeb.RegistrationLive do
+  alias RssSubscriptionBot.Core.Users
+  alias RssSubscriptionBot.Core.Accounts
   alias Ecto.Changeset
   alias RssSubscriptionBot.Core.Account
   use RssSubscriptionBotWeb, :live_view
@@ -29,6 +31,22 @@ defmodule RssSubscriptionBotWeb.RegistrationLive do
 
     socket = socket |> assign_form(changeset)
     {:noreply, socket}
+  end
+
+  def handle_event("save", %{"account" => account}, socket) do
+    %{"username" => username, "pwd_string" => pwd_string} = account
+
+    with {:ok, account} <- Accounts.create_account(username, pwd_string),
+         {:ok, _} <- Users.create_user(account.id) do
+      {:noreply,
+       socket
+       |> put_flash(:info, "Account created successfully")
+       # todo: navigate somewhere else 
+       |> redirect(to: ~p"/")}
+    else
+      {:error, %Changeset{} = changeset} ->
+        {:noreply, socket |> assign_form(changeset)}
+    end
   end
 
   def render(assigns) do
