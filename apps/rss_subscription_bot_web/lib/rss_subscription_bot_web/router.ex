@@ -20,6 +20,7 @@ defmodule RssSubscriptionBotWeb.Router do
     get("/", PageController, :home)
     live("/user/registration", RegistrationLive)
     live("/user/login", UserLoginLive)
+    post("/user/login", UserSessionController, :create)
   end
 
   # Other scopes may use custom stacks.
