@@ -21,8 +21,13 @@ defmodule RssSubscriptionBotWeb.RegistrationLive do
     socket |> assign(form: changeset |> to_form())
   end
 
-  def handle_event("validate", _unsigned_params, socket) do
-    # todo
+  def handle_event("validate", %{"account" => attrs}, %{assigns: %{account: account}} = socket) do
+    changeset =
+      account
+      |> Account.registration_changeset(attrs)
+      |> Map.put(:action, :validate)
+
+    socket = socket |> assign_form(changeset)
     {:noreply, socket}
   end
 
