@@ -2,7 +2,9 @@ defmodule RssSubscriptionBotWeb.UserLoginLive do
   use RssSubscriptionBotWeb, :live_view
 
   def mount(_, _, socket) do
-    {:ok, socket |> assign(form: %{} |> to_form(as: :user))}
+    username = socket.assigns.flash |> live_flash(:username)
+
+    {:ok, socket |> assign(form: %{"username" => username} |> to_form(as: :user))}
   end
 
   def render(assigns) do
