@@ -11,7 +11,10 @@ defmodule RssSubscriptionBotWeb.UserSessionController do
     |> case do
       {:ok, %Session{token: token}} ->
         conn
+        |> configure_session(renew: true)
+        |> clear_session()
         |> put_session(:auth_token, token)
+        |> put_session(:live_socket_id, "user_session:#{Base.url_encode64(token)}")
         |> redirect(to: ~p"/")
 
       {:error, :invalid_credentials} ->
