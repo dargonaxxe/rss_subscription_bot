@@ -31,8 +31,7 @@ defmodule RssSubscriptionBotWeb.Auth do
 
   def redirect_if_authenticated(conn, _) do
     if conn.assigns[:account] do
-      # todo: another path
-      conn |> redirect(to: ~p"/subscriptions") |> halt()
+      conn |> redirect(to: path_authenticated()) |> halt()
     else
       conn
     end
@@ -42,7 +41,7 @@ defmodule RssSubscriptionBotWeb.Auth do
     if conn.assigns[:account] do
       conn
     else
-      conn |> redirect(to: ~p"/user/login") |> halt()
+      conn |> redirect(to: path_unauthenticated()) |> halt()
     end
   end
 
@@ -53,7 +52,7 @@ defmodule RssSubscriptionBotWeb.Auth do
     |> if do
       {:cont, socket}
     else
-      {:halt, socket |> Phoenix.LiveView.redirect(to: ~p"/user/login")}
+      {:halt, socket |> Phoenix.LiveView.redirect(to: path_unauthenticated())}
     end
   end
 
@@ -64,5 +63,13 @@ defmodule RssSubscriptionBotWeb.Auth do
       |> Map.get("auth_token")
       |> Sessions.get_account_by_token()
     end)
+  end
+
+  def path_authenticated() do
+    ~p"/subscriptions"
+  end
+
+  def path_unauthenticated() do
+    ~p"/user/login"
   end
 end

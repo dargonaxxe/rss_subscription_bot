@@ -6,7 +6,7 @@ defmodule RssSubscriptionBotWeb.RegistrationLive do
   use RssSubscriptionBotWeb, :live_view
 
   def mount(_, _, socket) do
-    socket = socket |> assign_account() |> assign_changeset()
+    socket = socket |> assign_account() |> assign(trigger_submit: false) |> assign_changeset()
     {:ok, socket}
   end
 
@@ -39,10 +39,9 @@ defmodule RssSubscriptionBotWeb.RegistrationLive do
     with {:ok, account} <- Accounts.create_account(username, pwd_string),
          {:ok, _} <- Users.create_user(account.id) do
       {:noreply,
-       socket
-       |> put_flash(:info, "Account created successfully")
-       # todo: navigate somewhere else 
-       |> redirect(to: ~p"/")}
+       socket |> put_flash(:info, "Account created successfully") |> assign(trigger_submit: true)}
+
+      # todo: navigate somewhere else 
     else
       {:error, %Changeset{} = changeset} ->
         {:noreply, socket |> assign_form(changeset)}
@@ -52,11 +51,11 @@ defmodule RssSubscriptionBotWeb.RegistrationLive do
   def render(assigns) do
     ~H"""
     <h1>Hello there!</h1>
-    <.simple_form for={@form} phx-change="validate" phx-submit="save">
+    <.simple_form for={@form} phx-change="validate" phx-submit="save" action={~p"/user/login"} method="post" phx-trigger-action={@trigger_submit}>
       <.input field={@form[:username]} label="Username"/>
       <.input field={@form[:pwd_string]} label="Password" type="password"/>
       <:actions> 
-        <.button>Save</.button>
+        <.button>Sign up</.button>
       </:actions>
     </.simple_form>
     """
