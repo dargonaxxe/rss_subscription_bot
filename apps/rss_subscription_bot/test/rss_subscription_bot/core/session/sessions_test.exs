@@ -18,4 +18,13 @@ defmodule RssSubscriptionBot.Core.SessionsTest do
       {:error, :invalid_credentials} = Sessions.sign_in(username, pass)
     end
   end
+
+  describe "get_by_token" do
+    test "should return session", %{account: %{username: username}} do
+      {:ok, session_1} = Sessions.sign_in(username, pass_valid())
+
+      session_2 = Sessions.get_by_token(session_1.token)
+      assert session_1 == session_2
+    end
+  end
 end

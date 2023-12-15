@@ -45,4 +45,14 @@ defmodule RssSubscriptionBot.Core.Sessions do
     NaiveDateTime.utc_now()
     |> NaiveDateTime.add(@token_valid_length, @token_valid_length_unit)
   end
+
+  def get_by_token(token) do
+    token
+    |> get_by_token_query()
+    |> Repo.one()
+  end
+
+  defp get_by_token_query(token) do
+    from(s in Session, where: s.token == ^token)
+  end
 end
