@@ -2,8 +2,10 @@ defmodule RssSubscriptionBotWeb.Router do
   use RssSubscriptionBotWeb, :router
 
   pipeline :browser do
+    import RssSubscriptionBotWeb.Auth, only: [put_account: 2]
     plug(:accepts, ["html"])
     plug(:fetch_session)
+    plug(:put_account)
     plug(:fetch_live_flash)
     plug(:put_root_layout, html: {RssSubscriptionBotWeb.Layouts, :root})
     plug(:protect_from_forgery)
