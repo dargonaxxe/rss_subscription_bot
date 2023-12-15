@@ -35,4 +35,12 @@ defmodule RssSubscriptionBotWeb.Auth do
       conn
     end
   end
+
+  def require_authenticated(conn, _) do
+    if conn.assigns[:account] do
+      conn
+    else
+      conn |> redirect(to: ~p"/") |> halt()
+    end
+  end
 end

@@ -1,7 +1,8 @@
 defmodule RssSubscriptionBotWeb.Router do
   use RssSubscriptionBotWeb, :router
 
-  import RssSubscriptionBotWeb.Auth, only: [put_account: 2, redirect_if_authenticated: 2]
+  import RssSubscriptionBotWeb.Auth,
+    only: [put_account: 2, redirect_if_authenticated: 2, require_authenticated: 2]
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -46,7 +47,7 @@ defmodule RssSubscriptionBotWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through(:browser)
+      pipe_through([:browser, :require_authenticated])
 
       live_dashboard("/dashboard", metrics: RssSubscriptionBotWeb.Telemetry)
       forward("/mailbox", Plug.Swoosh.MailboxPreview)
