@@ -1,7 +1,9 @@
 defmodule RssSubscriptionBot.Core.Subscriptions do
+  alias RssSubscriptionBot.Core.TgUsers
   alias RssSubscriptionBot.Repo
   alias RssSubscriptionBot.Core.Subscription
 
+  # todo: fix tests
   def create_subscription(user_id, url, tg_handle, name) do
     attrs = %{
       user_id: user_id,
@@ -12,7 +14,22 @@ defmodule RssSubscriptionBot.Core.Subscriptions do
 
     Subscription.new()
     |> Subscription.changeset(attrs)
+    |> validate_tg_handle(tg_handle)
     |> Repo.insert()
+  end
+
+  defp validate_tg_handle(changeset, tg_handle) do
+    tg_user = tg_handle |> TgUsers.find_by_handle()
+
+    changeset
+    |> validate_tg_user(tg_user)
+  end
+
+  defp validate_tg_user(changeset, %{}), do: changeset
+
+  defp validate_tg_user(changeset, nil) do
+    import Ecto.Changeset, only: [add_error: 4]
+    changeset |> add_error(:tg_handle, "Unknown user", [])
   end
 
   def get_subscriptions(user_id) do

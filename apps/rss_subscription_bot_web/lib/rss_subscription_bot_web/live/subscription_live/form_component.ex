@@ -56,8 +56,6 @@ defmodule RssSubscriptionBotWeb.SubscriptionLive.FormComponent do
   end
 
   defp save_subscription(socket, :new, subscription_params) do
-    socket.assigns |> Map.get(:account) |> inspect() |> IO.puts()
-
     user_id =
       socket.assigns
       |> Map.get(:account)
