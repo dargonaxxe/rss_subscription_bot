@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBot.Core.Sessions do
+  alias RssSubscriptionBot.Core.Accounts
   alias RssSubscriptionBot.Core.Session
   alias RssSubscriptionBot.Core.Account
   alias RssSubscriptionBot.Repo
@@ -54,5 +55,14 @@ defmodule RssSubscriptionBot.Core.Sessions do
 
   defp get_by_token_query(token) do
     from(s in Session, where: s.token == ^token)
+  end
+
+  def get_account_by_token(token) do
+    with %{account_id: account_id} <- get_by_token(token),
+         %{} = account <- Accounts.get_account_by_id(account_id) do
+      account
+    else
+      _ -> nil
+    end
   end
 end

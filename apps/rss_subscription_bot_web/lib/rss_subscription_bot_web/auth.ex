@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBotWeb.Auth do
+  alias RssSubscriptionBot.Core.Account
   use RssSubscriptionBotWeb, :verified_routes
   alias RssSubscriptionBot.Core.Accounts
   alias RssSubscriptionBot.Core.Sessions
@@ -18,12 +19,14 @@ defmodule RssSubscriptionBotWeb.Auth do
   end
 
   defp assign_account(conn, token) do
-    with %{account_id: account_id} <- Sessions.get_by_token(token),
-         %{} = account <- Accounts.get_account_by_id(account_id) do
-      conn |> assign(:account, account)
-    else
-      _ ->
+    token
+    |> Sessions.get_account_by_token()
+    |> case do
+      nil ->
         conn
+
+      %Account{} = account ->
+        conn |> assign(:account, account)
     end
   end
 

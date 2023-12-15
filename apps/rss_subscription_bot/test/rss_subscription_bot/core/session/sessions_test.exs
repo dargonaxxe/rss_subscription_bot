@@ -27,4 +27,16 @@ defmodule RssSubscriptionBot.Core.SessionsTest do
       assert session_1 == session_2
     end
   end
+
+  describe "get_account_by_token" do
+    test "should return account", %{account: %{username: username} = account_1} do
+      keys_to_compare = [:username, :pwd_hash, :inserted_at, :updated_at]
+      {:ok, session_1} = Sessions.sign_in(username, pass_valid())
+      account_2 = Sessions.get_account_by_token(session_1.token)
+
+      for key <- keys_to_compare do
+        assert account_1 |> Map.get(key) == account_2 |> Map.get(key)
+      end
+    end
+  end
 end
