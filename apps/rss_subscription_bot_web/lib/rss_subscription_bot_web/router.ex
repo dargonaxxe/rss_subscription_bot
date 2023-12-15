@@ -1,4 +1,9 @@
 defmodule RssSubscriptionBotWeb.Router do
+  alias RssSubscriptionBotWeb.PageController
+  alias RssSubscriptionBotWeb.UserSessionController
+  alias RssSubscriptionBotWeb.SubscriptionsLive
+  alias RssSubscriptionBotWeb.UserLoginLive
+  alias RssSubscriptionBotWeb.RegistrationLive
   use RssSubscriptionBotWeb, :router
 
   import RssSubscriptionBotWeb.Auth,
@@ -18,18 +23,25 @@ defmodule RssSubscriptionBotWeb.Router do
     plug(:accepts, ["json"])
   end
 
-  scope "/", RssSubscriptionBotWeb do
+  scope "/" do
     pipe_through(:browser)
 
     get("/", PageController, :home)
-    post("/user/login", UserSessionController, :create)
   end
 
-  scope "/", RssSubscriptionBotWeb do
+  scope path: "/" do
     pipe_through([:browser, :redirect_if_authenticated])
 
     live("/user/registration", RegistrationLive)
+
     live("/user/login", UserLoginLive)
+    post("/user/login", UserSessionController, :create)
+  end
+
+  scope(path: "/") do
+    pipe_through([:browser, :require_authenticated])
+
+    live("/subscriptions/", SubscriptionsLive)
   end
 
   # Other scopes may use custom stacks.
