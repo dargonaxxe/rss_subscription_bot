@@ -1,7 +1,9 @@
 defmodule RssSubscriptionBotWeb.Auth do
+  use RssSubscriptionBotWeb, :verified_routes
   alias RssSubscriptionBot.Core.Accounts
   alias RssSubscriptionBot.Core.Sessions
   import Plug.Conn
+  import Phoenix.Controller
 
   def put_account(conn, _opts) do
     conn
@@ -22,6 +24,15 @@ defmodule RssSubscriptionBotWeb.Auth do
     else
       _ ->
         conn
+    end
+  end
+
+  def redirect_if_authenticated(conn, _) do
+    if conn.assigns[:account] do
+      # todo: another path
+      conn |> redirect(to: ~p"/") |> halt()
+    else
+      conn
     end
   end
 end

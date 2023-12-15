@@ -1,8 +1,9 @@
 defmodule RssSubscriptionBotWeb.Router do
   use RssSubscriptionBotWeb, :router
 
+  import RssSubscriptionBotWeb.Auth, only: [put_account: 2, redirect_if_authenticated: 2]
+
   pipeline :browser do
-    import RssSubscriptionBotWeb.Auth, only: [put_account: 2]
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:put_account)
@@ -20,9 +21,14 @@ defmodule RssSubscriptionBotWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :home)
+    post("/user/login", UserSessionController, :create)
+  end
+
+  scope "/", RssSubscriptionBotWeb do
+    pipe_through([:browser, :redirect_if_authenticated])
+
     live("/user/registration", RegistrationLive)
     live("/user/login", UserLoginLive)
-    post("/user/login", UserSessionController, :create)
   end
 
   # Other scopes may use custom stacks.
