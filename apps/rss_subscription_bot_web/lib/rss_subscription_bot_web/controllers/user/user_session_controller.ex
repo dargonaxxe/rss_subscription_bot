@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBotWeb.UserSessionController do
+  alias RssSubscriptionBot.Core.Session
   alias RssSubscriptionBot.Core.Sessions
   use RssSubscriptionBotWeb, :controller
 
@@ -8,9 +9,10 @@ defmodule RssSubscriptionBotWeb.UserSessionController do
     username
     |> Sessions.sign_in(pwd_string)
     |> case do
-      {:ok, _session} ->
-        # todo
-        nil
+      {:ok, %Session{token: token}} ->
+        conn
+        |> put_session(:auth_token, token)
+        |> redirect(to: ~p"/")
 
       {:error, :invalid_credentials} ->
         conn
