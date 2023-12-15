@@ -11,4 +11,9 @@ defmodule RssSubscriptionBot.Core.Users do
   def get_users() do
     Repo.all(User)
   end
+
+  def get_user_by_id(id) do
+    User
+    |> Repo.get_by(id: id)
+  end
 end

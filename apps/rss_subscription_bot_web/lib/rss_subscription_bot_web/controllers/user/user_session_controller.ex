@@ -1,5 +1,4 @@
 defmodule RssSubscriptionBotWeb.UserSessionController do
-  alias RssSubscriptionBot.Core.Session
   alias RssSubscriptionBot.Core.Sessions
   use RssSubscriptionBotWeb, :controller
 
