@@ -39,4 +39,15 @@ defmodule RssSubscriptionBot.Core.UsersTest do
       assert user_1 == user_2
     end
   end
+
+  describe "get_user_by_account_id" do
+    setup [:setup_account]
+
+    test "should return user", %{account: %{id: account_id}} do
+      {:ok, user_1} = Users.create_user(account_id)
+      user_2 = Users.get_user_by_account_id(account_id)
+
+      assert user_1 == user_2
+    end
+  end
 end

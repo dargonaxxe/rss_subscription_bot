@@ -81,14 +81,14 @@ defmodule RssSubscriptionBot.Core.FeedTest do
       assert Feed.get_items(subscription_id) == [item_2, item_1]
     end
 
-    test "should only return 20 items", %{subscription: %{id: subscription_id}} do
-      0..40
+    test "should only return 200 items", %{subscription: %{id: subscription_id}} do
+      0..400
       |> Enum.each(fn x ->
         {:ok, _} = Feed.add_item(subscription_id, "title", "content", "guid-#{x}")
       end)
 
       result = Feed.get_items(subscription_id)
-      assert length(result) == 20
+      assert length(result) == 200
     end
   end
 end

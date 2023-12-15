@@ -10,7 +10,7 @@ config :rss_subscription_bot_web, RssSubscriptionBotWeb.Endpoint,
 config :bcrypt_elixir, log_rounds: 4
 
 config :rss_subscription_bot, RssSubscriptionBot.Repo,
-  database: "rss_subscription_bot_repo",
+  database: "rss_subscription_bot_repo_test",
   username: "user",
   password: "pass",
   hostname: "localhost",
