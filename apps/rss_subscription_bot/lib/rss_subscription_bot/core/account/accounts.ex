@@ -13,4 +13,9 @@ defmodule RssSubscriptionBot.Core.Accounts do
     |> Account.registration_changeset(attrs)
     |> Repo.insert()
   end
+
+  def get_account_by_id(id) do
+    Account
+    |> Repo.get_by(id: id)
+  end
 end

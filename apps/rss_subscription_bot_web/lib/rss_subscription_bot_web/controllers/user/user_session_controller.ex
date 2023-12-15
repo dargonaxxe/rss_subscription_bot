@@ -9,7 +9,7 @@ defmodule RssSubscriptionBotWeb.UserSessionController do
     username
     |> Sessions.sign_in(pwd_string)
     |> case do
-      {:ok, %Session{} = _session} ->
+      {:ok, _session} ->
         # todo
         nil
 
