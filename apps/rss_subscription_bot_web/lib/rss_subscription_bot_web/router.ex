@@ -1,8 +1,8 @@
 defmodule RssSubscriptionBotWeb.Router do
+  alias RssSubscriptionBotWeb.SubscriptionLive
   alias RssSubscriptionBotWeb.Auth
   alias RssSubscriptionBotWeb.PageController
   alias RssSubscriptionBotWeb.UserSessionController
-  alias RssSubscriptionBotWeb.SubscriptionsLive
   alias RssSubscriptionBotWeb.UserLoginLive
   alias RssSubscriptionBotWeb.RegistrationLive
   use RssSubscriptionBotWeb, :router
@@ -43,7 +43,9 @@ defmodule RssSubscriptionBotWeb.Router do
     pipe_through([:browser, :require_authenticated])
 
     live_session :require_authenticated, on_mount: [{Auth, :require_authenticated}] do
-      live("/subscriptions/", SubscriptionsLive)
+      live("/subscriptions", SubscriptionLive.Index, :index)
+      live("/subscriptions/new", SubscriptionLive.Index, :new)
+      live("/subscriptions/:id", SubscriptionLive.Show, :show)
     end
   end
 

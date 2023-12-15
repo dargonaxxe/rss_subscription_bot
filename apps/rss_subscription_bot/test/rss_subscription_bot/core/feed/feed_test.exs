@@ -42,7 +42,9 @@ defmodule RssSubscriptionBot.Core.FeedTest do
     setup %{} do
       {:ok, account_2} = Accounts.create_account("username_2", pass_valid())
       {:ok, user_2} = Users.create_user(account_2.id)
-      {:ok, subscription_2} = Subscriptions.create_subscription(user_2.id, "url", "tg_handle")
+
+      {:ok, subscription_2} =
+        Subscriptions.create_subscription(user_2.id, "url", "tg_handle", "name")
 
       %{
         account_2: account_2,

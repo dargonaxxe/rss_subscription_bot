@@ -1,0 +1,23 @@
+<.header>
+  Subscription <%= @subscription.id %>
+  <:subtitle>This is a subscription record from your database.</:subtitle>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @subscription.name %></:item>
+  <:item title="Url"><%= @subscription.url %></:item>
+  <:item title="Tg handle"><%= @subscription.tg_handle %></:item>
+</.list>
+
+<.back navigate={~p"/subscriptions"}>Back to subscriptions</.back>
+
+<.modal :if={@live_action == :edit} id="subscription-modal" show on_cancel={JS.patch(~p"/subscriptions/#{@subscription}")}>
+  <.live_component
+    module={RssSubscriptionBotWeb.SubscriptionLive.FormComponent}
+    id={@subscription.id}
+    title={@page_title}
+    action={@live_action}
+    subscription={@subscription}
+    patch={~p"/subscriptions/#{@subscription}"}
+  />
+</.modal>

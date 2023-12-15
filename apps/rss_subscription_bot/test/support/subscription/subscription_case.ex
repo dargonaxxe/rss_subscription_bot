@@ -9,7 +9,9 @@ defmodule RssSubscriptionBot.SubscriptionCase do
       setup [:setup_user]
 
       defp setup_subscription(%{user: %{id: user_id}}) do
-        {:ok, subscription} = Subscriptions.create_subscription(user_id, "url", "tg_handle")
+        {:ok, subscription} =
+          Subscriptions.create_subscription(user_id, "url", "tg_handle", "name")
+
         %{subscription: subscription}
       end
     end

@@ -13,7 +13,8 @@ defmodule RssSubscriptionBot.Core.SubscriptionTest do
       updated_at: :naive_datetime,
       url: :string,
       user_id: :id,
-      tg_handle: :string
+      tg_handle: :string,
+      name: :string
     ]
 
     test "should have expected fields and types" do
@@ -49,6 +50,11 @@ defmodule RssSubscriptionBot.Core.SubscriptionTest do
 
     test "should return valid changeset" do
       %{valid?: true} = Subscription.new() |> Subscription.changeset(attrs_valid())
+    end
+
+    test "should validate name presence" do
+      %{errors: [name: {_, [validation: :required]}]} =
+        Subscription.new() |> Subscription.changeset(attrs_no_name())
     end
   end
 end

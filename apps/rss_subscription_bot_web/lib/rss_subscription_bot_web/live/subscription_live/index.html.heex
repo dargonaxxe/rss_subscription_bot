@@ -1,0 +1,38 @@
+<.header>
+  Listing Subscriptions
+  <:actions>
+    <.link patch={~p"/subscriptions/new"}>
+      <.button>New Subscription</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="subscriptions"
+  rows={@streams.subscriptions}
+  row_click={fn {_id, subscription} -> JS.navigate(~p"/subscriptions/#{subscription}") end}
+>
+  <:col :let={{_id, subscription}} label="Name"><%= subscription.name %></:col>
+  <:col :let={{_id, subscription}} label="Url"><%= subscription.url %></:col>
+  <:col :let={{_id, subscription}} label="Tg handle"><%= subscription.tg_handle %></:col>
+  <:action :let={{id, subscription}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: subscription.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="subscription-modal" show on_cancel={JS.patch(~p"/subscriptions")}>
+  <.live_component
+    module={RssSubscriptionBotWeb.SubscriptionLive.FormComponent}
+    id={@subscription.id || :new}
+    title={@page_title}
+    action={@live_action}
+    subscription={@subscription}
+    patch={~p"/subscriptions"}
+    account={@account}
+  />
+</.modal>

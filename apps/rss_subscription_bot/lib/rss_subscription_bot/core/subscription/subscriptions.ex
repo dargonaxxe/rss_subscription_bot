@@ -2,11 +2,12 @@ defmodule RssSubscriptionBot.Core.Subscriptions do
   alias RssSubscriptionBot.Repo
   alias RssSubscriptionBot.Core.Subscription
 
-  def create_subscription(user_id, url, tg_handle) do
+  def create_subscription(user_id, url, tg_handle, name) do
     attrs = %{
       user_id: user_id,
       url: url,
-      tg_handle: tg_handle
+      tg_handle: tg_handle,
+      name: name
     }
 
     Subscription.new()
@@ -18,6 +19,15 @@ defmodule RssSubscriptionBot.Core.Subscriptions do
     user_id
     |> get_subscriptions_query()
     |> Repo.all()
+  end
+
+  def get_subscription!(id) do
+    Repo.get_by!(Subscription, id: id)
+  end
+
+  def delete_subscription(subscription) do
+    subscription
+    |> Repo.delete()
   end
 
   import Ecto.Query

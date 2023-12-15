@@ -7,9 +7,10 @@ defmodule RssSubscriptionBot.Core.SubscriptionsTest do
 
   setup [:setup_user]
 
+  @name "name"
   @tg_handle "tg_handle"
   defp create_subscription(user_id, url) do
-    {:ok, sub} = Subscriptions.create_subscription(user_id, url, @tg_handle)
+    {:ok, sub} = Subscriptions.create_subscription(user_id, url, @tg_handle, @name)
     sub
   end
 
@@ -17,11 +18,11 @@ defmodule RssSubscriptionBot.Core.SubscriptionsTest do
     test "should fail when user does not exist", %{user: %{id: user_id}} do
       {:error,
        %{errors: [user: {_, [constraint: :assoc, constraint_name: "subscriptions_user_id_fkey"]}]}} =
-        Subscriptions.create_subscription(user_id + 1, "url", @tg_handle)
+        Subscriptions.create_subscription(user_id + 1, "url", @tg_handle, @name)
     end
 
     test "should successfully create subscription when user is present", %{user: %{id: user_id}} do
-      {:ok, _} = Subscriptions.create_subscription(user_id, "url", @tg_handle)
+      {:ok, _} = Subscriptions.create_subscription(user_id, "url", @tg_handle, @name)
     end
   end
 
@@ -59,6 +60,31 @@ defmodule RssSubscriptionBot.Core.SubscriptionsTest do
 
       assert Subscriptions.get_subscriptions(user_1.id) == [sub_1]
       assert Subscriptions.get_subscriptions(user_2.id) == [sub_2]
+    end
+  end
+
+  describe "get_subscription!" do
+    test "should return subscription when present", %{user: %{id: user_id}} do
+      subscription_1 = create_subscription(user_id, "url")
+      subscription_2 = Subscriptions.get_subscription!(subscription_1.id)
+      assert subscription_1 == subscription_2
+    end
+
+    test "should fail when no subscription is present", %{user: %{id: user_id}} do
+      subscription = create_subscription(user_id, "url")
+
+      assert_raise(Ecto.NoResultsError, fn ->
+        Subscriptions.get_subscription!(subscription.id + 1)
+      end)
+    end
+  end
+
+  describe "delete_subscription" do
+    test "should delete subscription", %{user: %{id: user_id}} do
+      subscription = create_subscription(user_id, "url")
+      {:ok, _} = Subscriptions.delete_subscription(subscription)
+
+      assert_raise(Ecto.NoResultsError, fn -> Subscriptions.get_subscription!(subscription.id) end)
     end
   end
 end
