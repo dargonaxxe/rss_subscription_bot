@@ -54,7 +54,8 @@ defmodule RssSubscriptionBot.Core.Sessions do
   end
 
   defp get_by_token_query(token) do
-    from(s in Session, where: s.token == ^token)
+    now = NaiveDateTime.utc_now()
+    from(s in Session, where: s.token == ^token and s.valid_until > ^now)
   end
 
   def get_account_by_token(token) do
