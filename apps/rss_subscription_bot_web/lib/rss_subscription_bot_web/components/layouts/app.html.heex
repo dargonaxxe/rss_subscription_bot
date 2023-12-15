@@ -15,12 +15,11 @@
       <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
         GitHub
       </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
-      >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
+      <%= if assigns[:account] do %>
+        user: <%= @account.username %>
+        <% else %> 
+        <.link href={~p"/user/login"}>Login</.link>
+      <% end %> 
     </div>
   </div>
 </header>

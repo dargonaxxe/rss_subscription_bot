@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBotWeb.Router do
+  alias RssSubscriptionBotWeb.Auth
   alias RssSubscriptionBotWeb.PageController
   alias RssSubscriptionBotWeb.UserSessionController
   alias RssSubscriptionBotWeb.SubscriptionsLive
@@ -41,7 +42,9 @@ defmodule RssSubscriptionBotWeb.Router do
   scope(path: "/") do
     pipe_through([:browser, :require_authenticated])
 
-    live("/subscriptions/", SubscriptionsLive)
+    live_session :require_authenticated, on_mount: [{Auth, :require_authenticated}] do
+      live("/subscriptions/", SubscriptionsLive)
+    end
   end
 
   # Other scopes may use custom stacks.
