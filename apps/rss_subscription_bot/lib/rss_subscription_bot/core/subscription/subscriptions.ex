@@ -1,4 +1,6 @@
 defmodule RssSubscriptionBot.Core.Subscriptions do
+  alias Ecto.Multi
+  alias RssSubscriptionBot.Core.Feed
   alias RssSubscriptionBot.Core.TgUsers
   alias RssSubscriptionBot.Repo
   alias RssSubscriptionBot.Core.Subscription
@@ -42,12 +44,14 @@ defmodule RssSubscriptionBot.Core.Subscriptions do
     Repo.get_by!(Subscription, id: id)
   end
 
-  def delete_subscription(subscription) do
-    subscription
-    |> Repo.delete()
-  end
-
   import Ecto.Query
+
+  def delete_subscription(subscription) do
+    Multi.new()
+    |> Multi.delete_all("delete feed items", subscription.id |> Feed.get_all_items_query())
+    |> Multi.delete("delete subscription", subscription)
+    |> Repo.transaction()
+  end
 
   defp get_subscriptions_query(user_id) do
     from(s in Subscription, where: s.user_id == ^user_id)

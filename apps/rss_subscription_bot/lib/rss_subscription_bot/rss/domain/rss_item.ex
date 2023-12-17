@@ -10,6 +10,8 @@ defmodule RssSubscriptionBot.Rss.Domain.RssItem do
     "#{item.title}\n\n#{item.content |> clear_content()}"
   end
 
+  defp clear_content(nil), do: ""
+
   defp clear_content(content) do
     content |> String.split("<br />") |> Enum.join("\n")
   end

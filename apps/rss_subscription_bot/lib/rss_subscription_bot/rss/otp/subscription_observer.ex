@@ -1,7 +1,6 @@
 defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
   alias RssSubscriptionBot.Rss.Domain.RssItem
   alias RssSubscriptionBot.Telegram.Domain.TelegramApi
-  alias RssSubscriptionBot.Core.TgUser
   alias RssSubscriptionBot.Core.TgUsers
   alias RssSubscriptionBot.Core.Subscription
   alias RssSubscriptionBot.Rss.Data.GetFeed
@@ -74,22 +73,23 @@ defmodule RssSubscriptionBot.Rss.Otp.SubscriptionObserver do
   end
 
   defp store_updates(%Subscription{} = subscription, updates) do
+    subscription.tg_handle
+    |> TgUsers.find_by_handle()
+    |> store_updates(subscription, updates)
+  end
+
+  # todo: logging
+  defp store_updates(nil, _, _), do: :ok
+
+  defp store_updates(%{tg_id: tg_id}, %Subscription{} = subscription, updates) do
     updates
-    |> Enum.each(fn x ->
-      {:ok, _} = Feed.add_item(subscription.id, x.title, x.content, x.guid)
+    |> Enum.each(fn update ->
+      {:ok, _} = Feed.add_item(subscription.id, update.title, update.content, update.guid)
 
       :ok =
-        subscription.tg_handle
-        |> TgUsers.find_by_handle()
-        |> case do
-          nil ->
-            :ok
-
-          %TgUser{tg_id: tg_id} ->
-            x
-            |> RssItem.to_send_message(tg_id)
-            |> TelegramApi.send_message()
-        end
+        update
+        |> RssItem.to_send_message(tg_id)
+        |> TelegramApi.send_message()
     end)
   end
 

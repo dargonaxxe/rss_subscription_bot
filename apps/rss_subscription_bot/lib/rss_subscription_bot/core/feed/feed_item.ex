@@ -21,7 +21,7 @@ defmodule RssSubscriptionBot.Core.Feed.Item do
   def changeset(%Item{} = item, attrs \\ %{}) do
     item
     |> cast(attrs, [:subscription_id, :title, :content, :guid])
-    |> validate_required([:subscription_id, :title, :content, :guid])
+    |> validate_required([:subscription_id, :title, :guid])
     |> assoc_constraint(:subscription)
     |> unique_constraint([:subscription_id, :guid], name: "feed_items_guid_subscription_id_index")
   end

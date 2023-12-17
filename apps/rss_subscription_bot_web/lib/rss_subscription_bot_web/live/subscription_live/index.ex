@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBotWeb.SubscriptionLive.Index do
+  alias RssSubscriptionBot.Rss.Otp.UserObserver
   alias RssSubscriptionBot.Core.Subscription
   alias RssSubscriptionBot.Core.Subscriptions
   alias RssSubscriptionBot.Core.Users
@@ -55,7 +56,7 @@ defmodule RssSubscriptionBotWeb.SubscriptionLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     subscription = Subscriptions.get_subscription!(id)
-
+    UserObserver.delete(subscription.user_id, subscription.id)
     {:ok, _} = Subscriptions.delete_subscription(subscription)
 
     {:noreply, stream_delete(socket, :subscriptions, subscription)}

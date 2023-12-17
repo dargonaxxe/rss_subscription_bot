@@ -1,4 +1,5 @@
 defmodule RssSubscriptionBotWeb.SubscriptionLive.FormComponent do
+  alias RssSubscriptionBot.Rss.Otp.UserObserver
   alias RssSubscriptionBot.Core.Users
   alias RssSubscriptionBot.Core.Subscriptions
   alias RssSubscriptionBot.Core.Subscription
@@ -71,6 +72,7 @@ defmodule RssSubscriptionBotWeb.SubscriptionLive.FormComponent do
     |> case do
       {:ok, subscription} ->
         notify_parent({:saved, subscription})
+        notify_observer(subscription)
 
         {:noreply,
          socket
@@ -80,6 +82,10 @@ defmodule RssSubscriptionBotWeb.SubscriptionLive.FormComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
     end
+  end
+
+  defp notify_observer(subscription) do
+    subscription |> UserObserver.add()
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

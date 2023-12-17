@@ -26,10 +26,13 @@ defmodule RssSubscriptionBot.Core.Feed do
   import Ecto.Query
 
   defp get_items_query(subscription_id) do
-    from(s in Item,
-      where: s.subscription_id == ^subscription_id,
-      limit: @items_limit,
-      order_by: [desc: :id]
-    )
+    subscription_id
+    |> get_all_items_query()
+    |> limit(@items_limit)
+    |> order_by(desc: :id)
+  end
+
+  def get_all_items_query(subscription_id) do
+    from(s in Item, where: s.subscription_id == ^subscription_id)
   end
 end
